@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 100%;
+    --card: 270 15% 15%;
+    --card-foreground: 0 0% 100%;
+    --popover: 270 20% 12%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 320 85% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 25% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 270 15% 25%;
+    --muted-foreground: 270 10% 70%;
+    --accent: 280 80% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 20% 25%;
+    --input: 270 20% 18%;
+    --ring: 320 85% 65%;
+    --radius: 0.75rem;
+    
+    /* Glass effect variables */
+    --glass-bg: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1), 
+      rgba(255, 255, 255, 0.05)
+    );
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --pink-gradient: linear-gradient(135deg, 
+      hsl(320, 85%, 65%) 0%, 
+      hsl(280, 80%, 70%) 100%
+    );
+    --purple-gradient: linear-gradient(135deg, 
+      hsl(280, 80%, 70%) 0%, 
+      hsl(260, 75%, 65%) 100%
+    );
+  }
+  
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 100%;
+    --card: 270 20% 10%;
+    --card-foreground: 0 0% 100%;
+    --popover: 270 25% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 320 90% 70%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 30% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 270 20% 20%;
+    --muted-foreground: 270 15% 65%;
+    --accent: 280 85% 75%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 25% 20%;
+    --input: 270 25% 15%;
+    --ring: 320 90% 70%;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-urbanist; /* Now 'font-urbanist' will work! */
+    font-family: 'Urbanist', sans-serif; /* Keep this for direct CSS usage */
+    background: radial-gradient(ellipse at top, 
+      hsl(270, 40%, 8%) 0%, 
+      hsl(0, 0%, 5%) 70%
+    );
+    min-height: 100vh;
+    /* Custom cursor with gradient and larger size */
+    cursor: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27gradient%27%20x1%3D%270%25%27%20y1%3D%270%25%27%20x2%3D%27100%25%27%20y2%3D%27100%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%23EB57A4%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23C376F7%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%2710%27%20fill%3D%27url%28%23gradient%29%27%2F%3E%3C%2Fsvg%3E") 12 12, auto;
+  }
+
+}
+
+/* Glass morphism utility classes */
+@layer utilities {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-pink {
+    background: linear-gradient(135deg, 
+      rgba(255, 105, 180, 0.15) 0%, 
+      rgba(186, 85, 211, 0.1) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+  }
+  
+  .glass-purple {
+    background: linear-gradient(135deg, 
+      rgba(186, 85, 211, 0.15) 0%, 
+      rgba(138, 43, 226, 0.1) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(186, 85, 211, 0.3);
+  }
+  
+  .gradient-pink-purple {
+    background: var(--pink-gradient);
+  }
+  
+  .gradient-purple {
+    background: var(--purple-gradient);
+  }
+  
+  .glow-pink {
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+  }
+  
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(186, 85, 211, 0.3);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fadein {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+

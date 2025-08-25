@@ -1,0 +1,39 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Pink → Purple gradient (tweak the hexes if you like) -->
+    <linearGradient id="grad" x1="30" y1="30" x2="226" y2="226" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF52AA"/>  <!-- ~ hsl(320,85%,65%) -->
+      <stop offset="100%" stop-color="#A56BFF"/> <!-- ~ hsl(280,80%,70%) -->
+    </linearGradient>
+
+    <!-- Outer glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <!-- duplicate & blur for glow -->
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Transparent canvas background -->
+  <rect width="256" height="256" fill="none"/>
+
+  <!-- Glow group (drawn first so it glows around the mark) -->
+  <g filter="url(#glow)" opacity="0.9">
+    <!-- the H shape (three rounded rectangles) -->
+    <rect x="48" y="36" width="48" height="184" rx="24" fill="url(#grad)"/>
+    <rect x="160" y="36" width="48" height="184" rx="24" fill="url(#grad)"/>
+    <rect x="96" y="112" width="64" height="32" rx="16" fill="url(#grad)"/>
+  </g>
+
+  <!-- A crisp inner stroke to keep edges sharp at small sizes -->
+  <g>
+    <rect x="48" y="36" width="48" height="184" rx="24" fill="url(#grad)" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+    <rect x="160" y="36" width="48" height="184" rx="24" fill="url(#grad)" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+    <rect x="96" y="112" width="64" height="32" rx="16" fill="url(#grad)" stroke="white" stroke-opacity="0.15" stroke-width="1"/>
+  </g>
+</svg>
