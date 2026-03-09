@@ -76,8 +76,23 @@
       hsl(0, 0%, 5%) 70%
     );
     min-height: 100vh;
-    /* Custom cursor with gradient and larger size */
-    cursor: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27gradient%27%20x1%3D%270%25%27%20y1%3D%270%25%27%20x2%3D%27100%25%27%20y2%3D%27100%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%23EB57A4%27%2F%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23C376F7%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%2710%27%20fill%3D%27url%28%23gradient%29%27%2F%3E%3C%2Fsvg%3E") 12 12, auto;
+    /* Standard cursor for better UX */
+    cursor: default;
+  }
+
+  /* Better cursor for interactive elements */
+  button, a, [role="button"], .cursor-pointer {
+    cursor: pointer !important;
+  }
+
+  /* Text cursor for input fields */
+  input, textarea, [contenteditable] {
+    cursor: text !important;
+  }
+
+  /* Wait cursor for loading states */
+  .loading, .animate-spin {
+    cursor: wait !important;
   }
 
 }
