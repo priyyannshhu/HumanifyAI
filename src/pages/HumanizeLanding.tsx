@@ -35,6 +35,10 @@ const HumanizeLanding: React.FC = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Clean up any existing animations first
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    gsap.killTweensOf("*");
+
     // GSAP Animations for hero section
     const tl = gsap.timeline();
     
@@ -60,7 +64,7 @@ const HumanizeLanding: React.FC = () => {
     });
 
     // Floating animation for background elements
-    gsap.to('.floating-element', {
+    const floatingAnimation = gsap.to('.floating-element', {
       y: -20,
       duration: 3,
       repeat: -1,
@@ -70,7 +74,7 @@ const HumanizeLanding: React.FC = () => {
     });
 
     // Scroll animations
-    ScrollTrigger.create({
+    const scrollAnimation = ScrollTrigger.create({
       trigger: '.feature-card',
       start: 'top 80%',
       end: 'bottom 20%',
@@ -92,8 +96,10 @@ const HumanizeLanding: React.FC = () => {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      floatingAnimation.kill();
+      scrollAnimation.kill();
       tl.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 

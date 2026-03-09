@@ -76,6 +76,10 @@ const MainLanding: React.FC = () => {
   ];
 
   useEffect(() => {
+    // Clean up any existing animations first
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    gsap.killTweensOf("*");
+
     // GSAP timeline for hero section
     const tl = gsap.timeline();
     
@@ -100,8 +104,8 @@ const MainLanding: React.FC = () => {
       delay: 0.5
     });
 
-    // Tool cards entrance animation
-    gsap.from('.tool-card', {
+    // Tool cards entrance animation - only run once
+    const toolCardsAnimation = gsap.from('.tool-card', {
       scale: 0.8,
       opacity: 0,
       duration: 0.8,
@@ -110,12 +114,16 @@ const MainLanding: React.FC = () => {
       scrollTrigger: {
         trigger: '.tools-grid',
         start: 'top 80%',
-        once: true
+        once: true,
+        onEnter: () => {
+          // Ensure elements are visible when animation starts
+          gsap.set('.tool-card', { opacity: 1 });
+        }
       }
     });
 
     // Parallax effect for background elements
-    gsap.to('.bg-element', {
+    const parallaxAnimation = gsap.to('.bg-element', {
       yPercent: -50,
       ease: 'none',
       scrollTrigger: {
@@ -127,8 +135,12 @@ const MainLanding: React.FC = () => {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      // Proper cleanup
+      toolCardsAnimation.kill();
+      parallaxAnimation.scrollTrigger?.kill();
+      parallaxAnimation.kill();
       tl.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
