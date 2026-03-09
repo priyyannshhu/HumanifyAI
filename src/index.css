@@ -169,6 +169,17 @@
   }
 }
 
+/* Prevent initial flickering for GSAP animations */
+.gsap-initial-hidden {
+  opacity: 0;
+}
+
+/* Ensure smooth transitions without conflicts */
+.no-flicker {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }

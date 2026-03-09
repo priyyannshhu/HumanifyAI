@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { TextPlugin } from 'gsap/TextPlugin';
 import { 
   SparklesIcon, 
   ArrowRightIcon,
@@ -22,8 +18,6 @@ import { Badge } from '@/components/ui/badge';
 import { transformText } from '@/services/advancedTransformService';
 import { useToast } from '@/components/ui/use-toast';
 
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
-
 const HumanizeLanding: React.FC = () => {
   const navigate = useNavigate();
   const [inputText, setInputText] = useState('');
@@ -35,72 +29,14 @@ const HumanizeLanding: React.FC = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Clean up any existing animations first
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    gsap.killTweensOf("*");
-
-    // GSAP Animations for hero section
-    const tl = gsap.timeline();
-    
-    tl.from('.hero-title', {
-      y: 100,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power3.out'
-    })
-    .from('.hero-subtitle', {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      delay: 0.2
-    })
-    .from('.hero-buttons', {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      delay: 0.4
+    // Simple fade-in animation
+    const elements = document.querySelectorAll('.fade-in');
+    elements.forEach((el, index) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, index * 200);
     });
-
-    // Floating animation for background elements
-    const floatingAnimation = gsap.to('.floating-element', {
-      y: -20,
-      duration: 3,
-      repeat: -1,
-      yoyo: true,
-      ease: 'power1.inOut',
-      stagger: 0.5
-    });
-
-    // Scroll animations
-    const scrollAnimation = ScrollTrigger.create({
-      trigger: '.feature-card',
-      start: 'top 80%',
-      end: 'bottom 20%',
-      scrub: 1,
-      onEnter: () => {
-        gsap.to('.feature-card', {
-          scale: 1.05,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      },
-      onLeave: () => {
-        gsap.to('.feature-card', {
-          scale: 1,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      }
-    });
-
-    return () => {
-      floatingAnimation.kill();
-      scrollAnimation.kill();
-      tl.kill();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
   }, []);
 
   const handleTransform = async () => {

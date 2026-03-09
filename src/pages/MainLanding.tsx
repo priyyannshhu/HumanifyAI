@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
   SparklesIcon, 
   ArrowRightIcon,
@@ -18,8 +15,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const MainLanding: React.FC = () => {
   const navigate = useNavigate();
@@ -76,71 +71,21 @@ const MainLanding: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Clean up any existing animations first
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    gsap.killTweensOf("*");
-
-    // GSAP timeline for hero section
-    const tl = gsap.timeline();
-    
-    tl.from('.main-title', {
-      y: 100,
-      opacity: 0,
-      duration: 1.5,
-      ease: 'power3.out'
-    })
-    .from('.main-subtitle', {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      delay: 0.3
-    })
-    .from('.hero-buttons', {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      delay: 0.5
-    });
-
-    // Tool cards entrance animation - only run once
-    const toolCardsAnimation = gsap.from('.tool-card', {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'back.out(1.7)',
-      stagger: 0.1,
-      scrollTrigger: {
-        trigger: '.tools-grid',
-        start: 'top 80%',
-        once: true,
-        onEnter: () => {
-          // Ensure elements are visible when animation starts
-          gsap.set('.tool-card', { opacity: 1 });
-        }
-      }
-    });
-
-    // Parallax effect for background elements
-    const parallaxAnimation = gsap.to('.bg-element', {
-      yPercent: -50,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.main-container',
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1
-      }
+    // Simple fade-in animation for hero section
+    const heroElements = document.querySelectorAll('.hero-element');
+    heroElements.forEach((el, index) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, index * 200);
     });
 
     return () => {
-      // Proper cleanup
-      toolCardsAnimation.kill();
-      parallaxAnimation.scrollTrigger?.kill();
-      parallaxAnimation.kill();
-      tl.kill();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      // Simple cleanup
+      heroElements.forEach(el => {
+        el.style.opacity = '';
+        el.style.transform = '';
+      });
     };
   }, []);
 
@@ -158,12 +103,7 @@ const MainLanding: React.FC = () => {
         {/* Hero Section */}
         <section className="min-h-screen flex items-center justify-center px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <motion.div 
-              className="main-title mb-8"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-            >
+            <div className="hero-element mb-8" style={{ opacity: '0', transform: 'translateY(20px)', transition: 'all 0.6s ease-out' }}>
               <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full glass border border-white/20 mb-6">
                 <SparklesIcon className="w-6 h-6 text-white" />
                 <span className="text-white font-medium">Advanced AI Tools</span>
@@ -178,21 +118,14 @@ const MainLanding: React.FC = () => {
                   Writing Instantly
                 </span>
               </h1>
-            </motion.div>
+            </div>
             
-            <motion.p 
-              className="main-subtitle text-xl lg:text-2xl text-white/70 mb-8 max-w-3xl mx-auto leading-relaxed"
-            >
+            <p className="hero-element text-xl lg:text-2xl text-white/70 mb-8 max-w-3xl mx-auto leading-relaxed" style={{ opacity: '0', transform: 'translateY(20px)', transition: 'all 0.6s ease-out 0.2s' }}>
               Professional AI-powered writing tools that help you create, transform, and perfect your content. 
               All features are completely free - no limits, no subscriptions.
-            </motion.p>
+            </p>
             
-            <motion.div 
-              className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center mb-16"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
+            <div className="hero-element flex flex-col sm:flex-row gap-4 justify-center mb-16" style={{ opacity: '0', transform: 'translateY(20px)', transition: 'all 0.6s ease-out 0.4s' }}>
               <Button
                 onClick={() => {
                   const firstTool = tools[0];
@@ -216,7 +149,7 @@ const MainLanding: React.FC = () => {
               >
                 View All Tools
               </Button>
-            </motion.div>
+            </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
@@ -226,17 +159,14 @@ const MainLanding: React.FC = () => {
                 { value: "∞", label: "No Limits", icon: <ZapIcon className="w-5 h-5" /> },
                 { value: "24/7", label: "Available", icon: <UsersIcon className="w-5 h-5" /> }
               ].map((stat, index) => (
-                <motion.div
+                <div
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="glass rounded-xl p-6 border border-white/20"
+                  className="hero-element glass rounded-xl p-6 border border-white/20"
+                  style={{ opacity: '0', transform: 'translateY(20px)', transition: 'all 0.6s ease-out 0.6s' }}
                 >
                   <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
                   <div className="text-white/60 text-sm">{stat.label}</div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -245,12 +175,7 @@ const MainLanding: React.FC = () => {
         {/* Tools Section */}
         <section className="py-20 px-6 tools-grid">
           <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
+            <div className="text-center mb-16">
               <h2 className="text-4xl lg:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                   Professional AI Writing Suite
@@ -259,18 +184,13 @@ const MainLanding: React.FC = () => {
               <p className="text-xl text-white/70 max-w-2xl mx-auto">
                 Every tool you need to create, transform, and perfect your writing
               </p>
-            </motion.div>
+            </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tools.map((tool, index) => (
-                <motion.div
+                <div
                   key={tool.title}
-                  className="tool-card cursor-pointer"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -10 }}
+                  className="tool-card cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-2"
                   onClick={() => navigate(tool.path)}
                 >
                   <Card className={`h-full p-6 glass border border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br ${tool.bgGradient}`}>
@@ -291,7 +211,7 @@ const MainLanding: React.FC = () => {
                       </Button>
                     </div>
                   </Card>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -300,12 +220,7 @@ const MainLanding: React.FC = () => {
         {/* Features Section */}
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
+            <div className="text-center mb-16">
               <h2 className="text-4xl lg:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                   Why Choose Our AI Tools?
@@ -314,7 +229,7 @@ const MainLanding: React.FC = () => {
               <p className="text-xl text-white/70 max-w-2xl mx-auto">
                 Advanced technology with unlimited access for everyone
               </p>
-            </motion.div>
+            </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
@@ -339,14 +254,9 @@ const MainLanding: React.FC = () => {
                   description: "Simple interface with powerful features"
                 }
               ].map((feature, index) => (
-                <motion.div
+                <div
                   key={feature.title}
-                  className="glass rounded-xl p-6 border border-white/20"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="glass rounded-xl p-6 border border-white/20 transition-all duration-300 hover:scale-105 hover:-translate-y-2"
                 >
                   <div className="flex items-center justify-center mb-4">
                     <div className="p-3 rounded-xl bg-gradient-to-r from-white/20 to-gray-200/20">
@@ -355,7 +265,7 @@ const MainLanding: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
                   <p className="text-white/60 leading-relaxed">{feature.description}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -364,12 +274,7 @@ const MainLanding: React.FC = () => {
         {/* CTA Section */}
         <section className="py-20 px-6">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="glass-gradient rounded-3xl p-12 text-center border border-white/20 relative overflow-hidden"
-            >
+            <div className="glass-gradient rounded-3xl p-12 text-center border border-white/20 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10" />
               <div className="relative z-10">
                 <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
@@ -387,7 +292,7 @@ const MainLanding: React.FC = () => {
                   <ArrowRightIcon className="ml-2 w-5 h-5" />
                 </Button>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -398,7 +303,7 @@ const MainLanding: React.FC = () => {
               Made with ❤️ by Priyanshu Vishwakarma
             </p>
             <p className="text-white/40 text-sm">
-              © 2025 Humanify AI. Advanced AI tools for everyone, completely free.
+              © 2026 Humanify AI Suite. Advanced AI tools for everyone, completely free.
             </p>
           </div>
         </footer>
