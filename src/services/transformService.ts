@@ -1,7 +1,3 @@
-
-// This would be a real API service in a production application
-// Here we're just creating a skeleton to demonstrate the structure
-import { GoogleGenerativeAI } from "@google/generative-ai";
 export interface TransformRequest {
   text: string;
   maxWords?: number;
@@ -13,118 +9,108 @@ export interface TransformResponse {
   transformedCharCount: number;
 }
 
-// In a real application, this would call the Gemini API
-// For this demo, we're mocking the functionality
-// export const transformText = async (request: TransformRequest): Promise<TransformResponse> => {
-//   try {
-//     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;;
-    
-//     if (!apiKey) {
-//       throw new Error("API key not found");
-//     }
-
-//     const genAI = new GoogleGenerativeAI(apiKey);
-//     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-//     const prompt = `Humanize the following text, making it sound more natural and engaging while preserving its original meaning and structure:
-
-// ${request.text}
-
-// Guidelines:
-// - Maintain the original intent and key information
-// - Improve readability and conversational tone
-// - Preserve any existing lists, headings, or formatting
-// - Do not add or remove substantive content
-// - Limit response to ${request.maxWords || 1000} words`;
-
-//     const result = await model.generateContent(prompt);
-//     const humanizedText = result.response.text();
-
-//     return {
-//       transformedText: humanizedText,
-//       originalCharCount: request.text.length,
-//       transformedCharCount: humanizedText.length
-//     };
-//   } catch (error) {
-//     console.error("Error transforming text:", error);
-//     throw error;
-//   }
-// };
-
 export const transformText = async (request: TransformRequest): Promise<TransformResponse> => {
   try {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
     if (!apiKey) {
-      throw new Error("API key not found");
+      throw new Error("API key not found. Please add VITE_GEMINI_API_KEY to your environment variables.");
     }
 
-    const prompt = `Humanize the following text, making it sound more natural and engaging while preserving its original meaning and structure:
+    const prompt = `You are a skilled human editor who specializes in making text sound more natural and engaging. Your task is to rework the input text so it keeps the same meaning and all important details, but with a more human touch.
 
+Input text to humanize:
 ${request.text}
 
-Guidelines:
-Rework the input text: Rewrite the text so that it keeps the original meaning and key details intact.
+Instructions:
+- Rewrite the text to preserve the original meaning and key details
+- Use different words and phrasing while maintaining the same intent
+- Keep all formatting elements like lists, headings, and structural cues unchanged
+- Do not add extra information or remove essential content
+- Introduce subtle grammar variations and natural inconsistencies to make it feel authentically human-written
+- Maintain the same language as the input text
+- Keep the word count within 5% of the original length
+- Return ONLY the transformed text with no explanations, notes, or additional commentary
 
-Use different words: Feel free to change the words, but ensure the meaning remains the same.
+Maximum word limit: ${request.maxWords || 1000} words`;
 
-Preserve structure: Keep all formatting elements like lists, headings, and other structural cues unchanged.
+    // Try gemini-1.5-flash first (more stable and has better free tier support)
+    const models = [
+      'gemini-1.5-flash',
+      'gemini-1.5-flash-latest',
+      'gemini-pro'
+    ];
 
-Avoid adding or removing content: Do not include any extra information or remove anything essential to the text.
+    let lastError: Error | null = null;
 
-No extra commentary: Only provide the transformed text. No explanations, notes, or additional comments.
-
-Maintain language: The final result should be in the same language as the input text.
-
-Word count: The transformed text should not exceed the original word count by more than 5%.
-
-Incorporate minor errors: Introduce a few grammar mistakes and inconsistencies to make the text feel more human-generated. 
-
-The final result should be in the same language as the input and should not exceed ${request.maxWords || 1000} words`;
-
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        contents: [
+    for (const model of models) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
           {
-            parts: [{ text: prompt }]
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [{ text: prompt }],
+                },
+              ],
+              generationConfig: {
+                temperature: 0.9,
+                topK: 40,
+                topP: 0.95,
+                maxOutputTokens: 8192,
+              },
+            }),
           }
-        ]
-      })
-    });
+        );
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!data.candidates || data.candidates.length === 0) {
-      throw new Error("No response from Gemini API");
+        // If we hit rate limit, try next model
+        if (!response.ok) {
+          if (data.error?.message?.includes('quota') || data.error?.message?.includes('rate limit')) {
+            console.warn(`Rate limit hit for model ${model}, trying next model...`);
+            lastError = new Error(data.error.message);
+            continue;
+          }
+          throw new Error(`Gemini API error: ${data.error?.message || response.statusText}`);
+        }
+
+        if (!data.candidates || data.candidates.length === 0) {
+          throw new Error("No response generated from Gemini API");
+        }
+
+        const humanizedText = data.candidates[0].content.parts[0].text.trim();
+
+        return {
+          transformedText: humanizedText,
+          originalCharCount: request.text.length,
+          transformedCharCount: humanizedText.length,
+        };
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error("Unknown error");
+        // If it's not a quota error, throw immediately
+        if (!lastError.message.includes('quota') && !lastError.message.includes('rate limit')) {
+          throw lastError;
+        }
+      }
     }
 
-    const humanizedText = data.candidates[0].content.parts[0].text;
-
-    return {
-      transformedText: humanizedText,
-      originalCharCount: request.text.length,
-      transformedCharCount: humanizedText.length
-    };
+    // If all models failed, throw the last error
+    throw new Error(
+      `All Gemini models exhausted. ${lastError?.message || 'Please check your API quota and try again later.'}\n\n` +
+      `Solutions:\n` +
+      `1. Wait for quota to reset (check: https://ai.google.dev/gemini-api/docs/rate-limits)\n` +
+      `2. Get a new API key from: https://aistudio.google.com/app/apikey\n` +
+      `3. Upgrade to paid tier for higher limits\n` +
+      `4. Monitor usage at: https://ai.google.dev/usage`
+    );
   } catch (error) {
     console.error("Error transforming text:", error);
-    throw error;
+    throw error instanceof Error ? error : new Error("Unknown error occurred while transforming text");
   }
 };
-
-
-// Guidelines:
-// - Maintain the original intent and key information
-// - Improve readability and conversational tone
-// - Preserve any existing lists, headings, or formatting
-// - Do not add or remove substantive content
-// - Limit response to ${request.maxWords || 1000} words
-// - Only the tranformed text should be returned, no other text or explanation or comments
-// - the response should be in the same language as the input text
-// - the response words limit should be 10% more than the input text words limit
-
-
-// You are a skilled human editor, who specialize in making text sound more natural and engaging. Your task is to rework the input text, so it keeps the same meaning and all important details, but with a more human touch. Feel free to use differents words, but as long as the meaning stay the same. Be sure to keep things like lists, headings, and other formats intact. Don’t add extra info, and don’t remove anything crucial. Only the transformed text should be returned, no extra explanations or notes. The final result should be in the same language as the input and should not exceed ${request.maxWords || 1000} words, but you can let it be upto 5% longer than the original word count. And remember, throw in a few grammar mistakes and inconsistencies to make it feel more like it’s written by a person.`

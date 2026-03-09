@@ -1,131 +1,227 @@
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import HeroSection from "@/components/HeroSection";
-import TextTransformer from "@/components/TextTransformer";
-import FeaturesSection from "@/components/FeaturesSection";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { 
+  SparklesIcon, 
+  ArrowRightIcon,
+  ZapIcon,
+  BrainIcon,
+  CheckCircleIcon,
+  UsersIcon
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  const features = [
+    {
+      icon: <SparklesIcon className="w-6 h-6" />,
+      title: "AI Humanizer",
+      description: "Transform robotic AI text into natural, human-like writing that bypasses AI detection.",
+      color: "from-primary to-accent"
+    },
+    {
+      icon: <ZapIcon className="w-6 h-6" />,
+      title: "Paraphrasing",
+      description: "Rewrite content using different wording while preserving the exact meaning.",
+      color: "from-blue-500 to-purple-500"
+    },
+    {
+      icon: <BrainIcon className="w-6 h-6" />,
+      title: "Tone Control",
+      description: "Adjust the tone of your text to match any desired style or audience.",
+      color: "from-green-500 to-teal-500"
+    },
+    {
+      icon: <CheckCircleIcon className="w-6 h-6" />,
+      title: "Grammar Fix",
+      description: "Correct grammar and improve readability without changing the meaning.",
+      color: "from-orange-500 to-red-500"
+    }
+  ];
+
+  const stats = [
+    { value: "10K+", label: "Active Users", icon: <UsersIcon className="w-5 h-5" /> },
+    { value: "100K+", label: "Texts Transformed", icon: <SparklesIcon className="w-5 h-5" /> },
+    { value: "0%", label: "AI Detection", icon: <CheckCircleIcon className="w-5 h-5" /> },
+    { value: "24/7", label: "Availability", icon: <ZapIcon className="w-5 h-5" /> }
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      
-      <main className="flex-1">
-        <HeroSection />
-        
-        <div className="relative z-10">
-          {/* Wave shape divider with dark theme */}
-          <div className="absolute -top-16 left-0 right-0 h-16 overflow-hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 1440 320"
-              className="w-full h-auto"
-              preserveAspectRatio="none"
+    <div className="min-h-screen bg-gradient-to-b from-black via-black/95 to-black">
+      {/* Background blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-3/4 left-1/3 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+      </div>
+
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="min-h-screen flex items-center justify-center px-6">
+          <div className="max-w-6xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <path
-                fill="rgba(20, 20, 30, 0.8)"
-                fillOpacity="1"
-                d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,101.3C960,107,1056,117,1152,117.3C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-              ></path>
-            </svg>
-          </div>
-          
-          <section id="transformer-section" className="bg-gradient-to-b from-black/60 to-black/40 py-20 glass-purple">
-            <div className="container mx-auto px-4">
-              <div className="text-center max-w-2xl mx-auto mb-12">
-                <h2 className="text-3xl font-bold mb-4">
-                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  From AI to Human in Seconds
-                  </span>
-                </h2>
-                <p className="text-white/80">
-Paste your AI-generated content below and watch it transform into natural, engaging writing that sounds genuinely human.                </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-purple border border-white/20 mb-6">
+                <SparklesIcon className="w-4 h-4 text-primary" />
+                <span className="text-white/80 text-sm">Powered by Advanced AI</span>
               </div>
               
-              <div className="flex justify-center">
-                <TextTransformer />
+              <h1 className="text-5xl lg:text-7xl font-bold mb-6">
+                <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  Make AI Writing
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent">
+                  Sound Human
+                </span>
+              </h1>
+              
+              <p className="text-xl lg:text-2xl text-white/70 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Transform robotic AI-generated text into natural, engaging content that bypasses AI detection and resonates with real people.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Button
+                  onClick={() => navigate('/dashboard')}
+                  size="lg"
+                  className="px-8 py-4 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-lg rounded-xl transition-all duration-300 group"
+                >
+                  Get Started Free
+                  <ArrowRightIcon className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                
+                <Button
+                  onClick={() => navigate('/humanize')}
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-4 glass-purple border border-white/20 text-white/80 hover:text-white hover:bg-white/10 font-semibold text-lg rounded-xl transition-all duration-300"
+                >
+                  Try Demo
+                </Button>
               </div>
-            </div>
-          </section>
-        </div>
-        
-        <FeaturesSection />
-<section id="about" className="py-20 bg-gradient-to-b from-black/40 to-black/60 relative overflow-hidden">
-          {/* Subtle animated background */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/30 rounded-full blur-3xl animate-float"></div>
-            <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-accent/30 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
-          </div>
+            </motion.div>
 
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-4xl mx-auto glass-pink rounded-2xl p-10 border border-white/20 glow-pink">
-              <h2 className="text-4xl font-bold mb-8 text-center">
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            >
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                  className="glass-pink rounded-xl p-6 border border-white/20"
+                >
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20">
+                      {stat.icon}
+                    </div>
+                  </div>
+                  <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                  <div className="text-white/60 text-sm">{stat.label}</div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-20 px-6">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl lg:text-5xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  The Human Touch Your AI Content Deserves
+                  AI Writing Suite
                 </span>
               </h2>
-              
-              <div className="prose prose-lg max-w-none text-white/90 space-y-6">
-                <div className="text-center mb-8">
-                  <p className="text-xl leading-relaxed text-white/95">
-                    <span className="text-primary font-semibold">Humanify</span> bridges the gap between AI efficiency and human authenticity, transforming robotic text into content that truly connects.
-                  </p>
-                </div>
+              <p className="text-xl text-white/70 max-w-2xl mx-auto">
+                Everything you need to transform and improve your writing in one powerful platform.
+              </p>
+            </motion.div>
 
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                  <div>
-                    <h3 className="text-xl font-semibold text-accent mb-4">The Challenge We Solve</h3>
-                    <p className="text-white/85 leading-relaxed">
-                      AI generates content at lightning speed, but often lacks the warmth and authenticity that resonates with real people. Generic, robotic phrasing can make your audience disconnect before they even finish reading.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl font-semibold text-primary mb-4">Our Solution</h3>
-                    <p className="text-white/85 leading-relaxed">
-                      Our advanced AI technology detects mechanical patterns and transforms them into natural, engaging language—preserving every bit of your original meaning while adding that essential human touch.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-black/20 rounded-xl p-6 border border-white/10 mt-8">
-                  <h3 className="text-lg font-semibold text-white mb-3 text-center">Perfect for Every Creator</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div className="text-white/80">
-                      <div className="text-primary font-medium">Writers</div>
-                      <div className="text-sm">Blog posts & articles</div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="group cursor-pointer"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <Card className="glass h-full p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                    <div className={`p-3 rounded-xl bg-gradient-to-r ${feature.color} mb-4 inline-block`}>
+                      <div className="text-white">{feature.icon}</div>
                     </div>
-                    <div className="text-white/80">
-                      <div className="text-accent font-medium">Marketers</div>
-                      <div className="text-sm">Campaign content</div>
-                    </div>
-                    <div className="text-white/80">
-                      <div className="text-primary font-medium">Students</div>
-                      <div className="text-sm">Academic papers</div>
-                    </div>
-                    <div className="text-white/80">
-                      <div className="text-accent font-medium">Businesses</div>
-                      <div className="text-sm">Professional docs</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 border border-white/10 mt-8">
-                  <p className="text-lg font-medium text-white mb-2">
-                    🚀 <span className="text-accent">100% Free</span> • <span className="text-primary">0% AI Detection</span> • <span className="text-accent">Instant Results</span>
-                  </p>
-                  <p className="text-white/75 text-sm">
-                    Join thousands who've discovered the perfect balance of AI speed and human authenticity
-                  </p>
-                </div>
-              </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+                    <p className="text-white/60 leading-relaxed">{feature.description}</p>
+                    <div className={`mt-4 h-0.5 bg-gradient-to-r ${feature.color} rounded-full opacity-0 group-hover:opacity-100 transition-opacity`} />
+                  </Card>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
-      </main>
-      
-      <Footer />
+        {/* CTA Section */}
+        <section className="py-20 px-6">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass-gradient rounded-3xl p-12 text-center border border-white/20 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10" />
+              <div className="relative z-10">
+                <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+                  Ready to Transform Your Writing?
+                </h2>
+                <p className="text-xl text-white/70 mb-8">
+                  Join thousands of users who are already creating better content with Humanify AI.
+                </p>
+                <Button
+                  onClick={() => navigate('/dashboard')}
+                  size="lg"
+                  className="px-8 py-4 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-lg rounded-xl transition-all duration-300"
+                >
+                  Start Writing Better
+                  <ArrowRightIcon className="ml-2 w-5 h-5" />
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-12 px-6 border-t border-white/10">
+          <div className="max-w-6xl mx-auto text-center">
+            <p className="text-white/60 mb-4">
+              Made with ❤️ by Priyanshu Vishwakarma
+            </p>
+            <p className="text-white/40 text-sm">
+              2025 Humanify AI Suite. Transform your writing, transform your impact.
+            </p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 };
