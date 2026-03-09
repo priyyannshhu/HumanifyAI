@@ -173,4 +173,4 @@ Start using our professional AI tools today - completely free!
 
 🌟 **6 Tools • 100% Free • Unlimited Usage • Professional Quality**
 
-© 2025 Humanify AI Suite - Advanced Writing Tools for Everyone
+© 2026 Humanify AI Suite - Advanced Writing Tools for Everyone
